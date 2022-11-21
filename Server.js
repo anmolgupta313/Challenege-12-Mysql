@@ -18,25 +18,32 @@ const tableData = () => {
         validate: EmployeeDataOptions => {
             if (EmployeeDataOptions) {
                 return true;
-            } else { 
+            } else {
                 false;
-                 return console.log('Select a Valid Option');
-                
+                return console.log('Select a Valid Option');
+
             }
         }
     }])
         .then(data => {
-            switch (data.choices) {
+            console.log(data.EmployeeDataOptions)
+            switch (data.EmployeeDataOptions) {
                 case "View All Departments":
                     viewAllDepartments()
                     break;
 
-                case "View All roles":
+                case "View All Roles":
+
+                    console.log('called function above')
                     viewAllRoles()
                     break;
 
                 case "View All Employees":
                     viewAllEmployees()
+                    break;
+
+                case "Add a Department":
+                    addDepartment();
                     break;
             }
         })
@@ -57,7 +64,7 @@ const viewAllDepartments = function viewDepartment() {
 }
 
 const viewAllRoles = function viewRoles() {
-    connection.query('SELECT * FROM Department', (err, result) => {
+    connection.query('SELECT * FROM Roles', (err, result) => {
         if (err) {
             console.log(err);
         } else {
@@ -68,7 +75,7 @@ const viewAllRoles = function viewRoles() {
 }
 
 const viewAllEmployees = function ViewEmployees() {
-    connection.query('SELECT * FROM Department', (err, result) => {
+    connection.query('SELECT * FROM Employee', (err, result) => {
         if (err) {
             console.log(err);
         } else {
@@ -76,6 +83,36 @@ const viewAllEmployees = function ViewEmployees() {
             tableData();
         }
     })
+}
+
+const addDepartment = () => {
+
+    inquirer.prompt([{
+        type: 'input',
+        name: 'addDepartment',
+        message: 'Add Name of the The Department',
+        validate: addDepartment => {
+            if (addDepartment) {
+                return true;
+            } else {
+                console.log("Add a department");
+                return false;
+            }
+        }
+    }])
+        .then(add => {
+            console.log(add)
+            connection.query('INSERT INTO Department(Department_name) VALUES(?)', [add.addDepartment], (err, result) => {
+                if (err) {
+                    console.log(err);
+                } else {
+                    console.table(result);
+                }
+            })
+            tableData();
+        })
+
+
 }
 
 // connection.query('SELECT * FROM Department',(err,result)=>{
